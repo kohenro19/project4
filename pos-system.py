@@ -17,16 +17,16 @@ class Order:
     def add_item_order(self,item_code):
         self.item_order_list.append(item_code)
         
-    def view_item_list(self):
-        for item in self.item_order_list:
-            print("商品コード:{}".format(item))
+    # def view_item_list(self):
+    #     for item in self.item_order_list:
+    #         print("商品コード:{}".format(item))
     
     # 課題1
     def get_item_data(self,item_code):
         for m in self.item_master:
             if item_code==m.item_code:
-                # return m.item_name,m.price
-                print(m.item_name,m.price)
+                print("{}".format(m.item_name)+"の金額: "+"{}".format(m.price))
+    
 ### メイン処理
 def main():
     # マスタ登録
@@ -37,13 +37,16 @@ def main():
     
     # オーダー登録
     order=Order(item_master)
-    order.add_item_order("001")
-    order.add_item_order("002")
-    order.add_item_order("003")
+    # order.add_item_order("001")
+    # order.add_item_order("002")
+    # order.add_item_order("003")
     
     # オーダー表示
-    order.view_item_list()
+    # order.view_item_list()
     order.get_item_data("001")
+    order.get_item_data("002")
+    order.get_item_data("003")
+
 
 if __name__ == "__main__":
     main()
