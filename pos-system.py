@@ -16,14 +16,14 @@ class Order:
     
     def add_item_order(self):
     # 課題2
-        self.item_code = input("商品コードを入力して下さい：")
-        self.item_order_list.append(self.item_code)
+        item_code = input("商品コードを入力して下さい：")
+        self.item_order_list.append(item_code)
         
     # 課題1
     def view_item_list(self):
-        for self.order_item_code in self.item_order_list:
+        for order_item_code in self.item_order_list:
             for m in self.item_master:
-                if self.order_item_code == m.item_code:
+                if order_item_code == m.item_code:
                     print("{}".format(m.item_name)+"の金額: "+"{}".format(m.price))
 
 ### メイン処理
