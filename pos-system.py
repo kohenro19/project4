@@ -22,6 +22,7 @@ class Order:
     def add_item_order(self):
     # 課題2
         item_code = input("商品コードを入力して下さい：")
+        item_num = input("何個買いますか")
         self.item_order_list.append(item_code)
         
     # 課題1
