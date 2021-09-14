@@ -15,22 +15,31 @@ class Item:
 
 ### オーダークラス
 class Order:
+    # 初期化
     def __init__(self,item_master):
         self.item_order_list=[]
         self.item_master=item_master
     
     def add_item_order(self):
-    # 課題2
-        item_code = input("商品コードを入力して下さい：")
-        item_num = input("何個買いますか")
-        self.item_order_list.append(item_code)
-        
+       
+        while True:
+            item_code = input("商品コードを入力して下さい：")
+            self.item_num = input("何個買いますか：")
+            self.item_order_list.append(item_code)
+            checkStop = input("買い物を続けますか。続ける場合：Y、中止する場合：Qと入力してください：")
+            if checkStop in ["Q", "q", "quit", "end", "終了"]:
+                break
+   
     # 課題1
     def view_item_list(self):
+        total_price = []
         for order_item_code in self.item_order_list:
-            for m in self.item_master:
-                if order_item_code == m.item_code:
-                    print("{}".format(m.item_name)+"の金額: "+"{}".format(m.price))
+            for master in self.item_master:
+                if order_item_code == master.item_code:
+                    total_price.append(int(master.price*int(self.item_num))) 
+
+        # 課題5
+        print("すべての合計金額："+"{}".format(sum(total_price)))
 
 def add_item_master_by_csv(csv_path):
         print("------- マスタ登録開始 ---------")
@@ -49,7 +58,7 @@ def add_item_master_by_csv(csv_path):
             print("マスタ登録が失敗しました")
             print("------- マスタ登録完了 ---------")
             sys.exit()
-            
+        
 ### メイン処理
 def main():
     # マスタ登録
