@@ -41,6 +41,16 @@ class Order:
         # 課題5
         print("すべての合計金額："+"{}".format(sum(total_price)))
 
+        payment = input("お預かり金額を入力してください：")
+
+        change = int(payment) - sum(total_price)
+
+        while int(change) < 0:
+            print("お預かりの金額では足りません")
+            payment = input("もう一度お預かりの金額を入力してください：")
+            change = int(payment) - sum(total_price)
+        print("お返しの金額は、"+"{}".format(change)+"です。")
+
 def add_item_master_by_csv(csv_path):
         print("------- マスタ登録開始 ---------")
         item_master=[]
