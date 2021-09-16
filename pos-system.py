@@ -1,7 +1,11 @@
+import os
+import datetime
+import pathlib
 import pandas as pd
 
+
 ITEM_MASTER_CSV_PATH="./item_master.csv"
-RECEIPT_FOLDER="./receipt"
+RECEIPT_FOLDER= "receipt"
 
 ### 商品クラス
 class Item:
@@ -9,16 +13,30 @@ class Item:
         self.item_code=item_code
         self.item_name=item_name
         self.price=price
-    
+
     def get_price(self):
         return self.price
 
 ### オーダークラス
 class Order:
     # 初期化
-    def __init__(self,item_master):
+    def __init__(self,item_master,reciept_folder):
         self.item_order_list=[]
         self.item_master=item_master
+        self.reciept_folder=reciept_folder
+        
+        now = datetime.datetime.now()
+        self.reciept_file = '{0:%Y%m%d%H%M%S}.txt'.format(now)
+        try:
+            os.makedirs(self.reciept_folder, exist_ok=True)
+            reciept = pathlib.Path(self.reciept_folder + "/" + self.reciept_file)
+            with reciept.open(mode='w') as f:
+                f.write('')
+
+        except FileExistsError as e:
+            print(e.strerror)  # エラーメッセージ ('Cannot create a file when that file already exists')
+            print(e.errno)     # エラー番号 (17)
+            print(e.filename)  # 作成できなかったディレクトリ名 ('foo')
     
     def add_item_order(self):
        
@@ -73,14 +91,14 @@ def add_item_master_by_csv(csv_path):
 def main():
     # マスタ登録
     item_master=add_item_master_by_csv(ITEM_MASTER_CSV_PATH) # CSVからマスタへ登録
-    order=Order(item_master) 
+    order=Order(item_master,RECEIPT_FOLDER) 
     # item_master=[]
     # path = "./item_master.csv"
     # df = pd.read_csv(path)
     # item_master.append(Item(df["item_code"], df["item_name"], df["price"]))
 
     # オーダー登録
-    order=Order(item_master)
+    # order=Order(item_master)
     order.add_item_order()
     
     # オーダー表示
