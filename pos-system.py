@@ -1,7 +1,11 @@
+import os
+import datetime
+import pathlib
 import pandas as pd
 
+
 ITEM_MASTER_CSV_PATH="./item_master.csv"
-RECEIPT_FOLDER="./receipt"
+RECEIPT_FOLDER= "receipt"
 
 ### 商品クラス
 class Item:
@@ -9,26 +13,42 @@ class Item:
         self.item_code=item_code
         self.item_name=item_name
         self.price=price
-    
+
     def get_price(self):
         return self.price
 
 ### オーダークラス
 class Order:
     # 初期化
-    def __init__(self,item_master):
+    def __init__(self,item_master,reciept_folder):
         self.item_order_list=[]
         self.item_master=item_master
+        self.reciept_folder=reciept_folder
+        
+        now = datetime.datetime.now()
+        self.reciept_file = '{0:%Y%m%d%H%M%S}.txt'.format(now)
+        try:
+            os.makedirs(self.reciept_folder, exist_ok=True)
+            reciept = pathlib.Path(self.reciept_folder + "/" + self.reciept_file)
+            with reciept.open(mode='w') as f:
+                f.write('')
+
+        except FileExistsError as e:
+            print(e.strerror)  # エラーメッセージ ('Cannot create a file when that file already exists')
+            print(e.errno)     # エラー番号 (17)
+            print(e.filename)  # 作成できなかったディレクトリ名 ('foo')
     
     def add_item_order(self):
-       
-        while True:
-            item_code = input("商品コードを入力して下さい：")
-            self.item_num = input("何個買いますか：")
-            self.item_order_list.append(item_code)
-            checkStop = input("買い物を続けますか。続ける場合：Y、中止する場合：Qと入力してください：")
-            if checkStop in ["Q", "q", "quit", "end", "終了"]:
-                break
+
+        with open(self.reciept_folder + "/" + self.reciept_file, mode='a', encoding="utf8") as f1:     
+            while True:
+                self.item_code = input("商品コードを入力して下さい：")
+                self.item_num = input("何個買いますか：")
+                f1.write("商品コード："+"{}\n".format(self.item_code))
+                self.item_order_list.append(self.item_code)
+                checkStop = input("買い物を続けますか。続ける場合：Y、中止する場合：Qと入力してください：")
+                if checkStop in ["Q", "q", "quit", "end", "終了"]:
+                    break
    
     # 課題1
     def view_item_list(self):
@@ -39,17 +59,22 @@ class Order:
                     total_price.append(int(master.price*int(self.item_num))) 
 
         # 課題5
-        print("すべての合計金額："+"{}".format(sum(total_price)))
+        with open(self.reciept_folder + "/" + self.reciept_file, 'w', encoding="utf8") as f2:
+            print("商品コード："+"{}".format(self.item_code), file=f2)
+            print("すべての合計金額："+"{}".format(sum(total_price)))
+            print("すべての合計金額："+"{}".format(sum(total_price)), file=f2)
 
-        payment = input("お預かり金額を入力してください：")
+            payment = input("お預かり金額を入力してください：")
+            print("お預かり金額："+"{}".format(payment), file=f2)
 
-        change = int(payment) - sum(total_price)
-
-        while int(change) < 0:
-            print("お預かりの金額では足りません")
-            payment = input("もう一度お預かりの金額を入力してください：")
             change = int(payment) - sum(total_price)
-        print("お返しの金額は、"+"{}".format(change)+"です。")
+
+            while int(change) < 0:
+                print("お預かりの金額では足りません")
+                payment = input("もう一度お預かりの金額を入力してください：")
+                change = int(payment) - sum(total_price)
+            print("お返しの金額は、"+"{}".format(change)+"です。")
+            print("お返しの金額："+"{}".format(change), file=f2)
 
 def add_item_master_by_csv(csv_path):
         print("------- マスタ登録開始 ---------")
@@ -73,14 +98,14 @@ def add_item_master_by_csv(csv_path):
 def main():
     # マスタ登録
     item_master=add_item_master_by_csv(ITEM_MASTER_CSV_PATH) # CSVからマスタへ登録
-    order=Order(item_master) 
+    order=Order(item_master,RECEIPT_FOLDER) 
     # item_master=[]
     # path = "./item_master.csv"
     # df = pd.read_csv(path)
     # item_master.append(Item(df["item_code"], df["item_name"], df["price"]))
 
     # オーダー登録
-    order=Order(item_master)
+    # order=Order(item_master)
     order.add_item_order()
     
     # オーダー表示
