@@ -41,15 +41,17 @@ class Order:
     def add_item_order(self):
 
         with open(self.reciept_folder + "/" + self.reciept_file, mode='a', encoding="utf8") as f1:     
+            f1.write("#### 購入商品 ###\n")
             while True:
-                self.item_code = input("商品コードを入力して下さい：")
+                self.input_item_code = input("商品コードを入力して下さい：")
                 self.item_num = input("何個買いますか：")
-                f1.write("商品コード："+"{}\n".format(self.item_code))
-                self.item_order_list.append(self.item_code)
+                f1.write("商品コード："+"{}\n".format(self.input_item_code))
+                self.item_order_list.append(self.input_item_code)
                 checkStop = input("買い物を続けますか。続ける場合：Y、中止する場合：Qと入力してください：")
                 if checkStop in ["Q", "q", "quit", "end", "終了"]:
                     break
-   
+            f1.write("################\n")
+
     # 課題1
     def view_item_list(self):
         total_price = []
@@ -59,13 +61,12 @@ class Order:
                     total_price.append(int(master.price*int(self.item_num))) 
 
         # 課題5
-        with open(self.reciept_folder + "/" + self.reciept_file, 'w', encoding="utf8") as f2:
-            print("商品コード："+"{}".format(self.item_code), file=f2)
+        with open(self.reciept_folder + "/" + self.reciept_file, 'a', encoding="utf8") as f2:
             print("すべての合計金額："+"{}".format(sum(total_price)))
-            print("すべての合計金額："+"{}".format(sum(total_price)), file=f2)
+            f2.write("すべての合計金額："+"{}".format(sum(total_price))+"\n")
 
             payment = input("お預かり金額を入力してください：")
-            print("お預かり金額："+"{}".format(payment), file=f2)
+            f2.write("お預かり金額："+"{}".format(payment)+"\n")
 
             change = int(payment) - sum(total_price)
 
@@ -74,7 +75,7 @@ class Order:
                 payment = input("もう一度お預かりの金額を入力してください：")
                 change = int(payment) - sum(total_price)
             print("お返しの金額は、"+"{}".format(change)+"です。")
-            print("お返しの金額："+"{}".format(change), file=f2)
+            f2.write("お返しの金額："+"{}".format(change))
 
 def add_item_master_by_csv(csv_path):
         print("------- マスタ登録開始 ---------")
